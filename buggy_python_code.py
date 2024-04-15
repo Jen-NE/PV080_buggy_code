@@ -1,10 +1,11 @@
-import yaml
 import flask
+import yaml
+import urllib
 
-app = flask.Flask(__name__)
+APP = flask.Flask(__name__)
 
 
-@app.route("/")
+@APP.route("/")
 def index():
     version = flask.request.args.get("urllib_version")
     url = flask.request.args.get("url")
@@ -28,8 +29,8 @@ def fetch_website(urllib_version, url):
 
     try:
         http = urllib.PoolManager()
-        r = http.request('GET', url)
-    except:
+        http.request('GET', url)
+    except Exception:
         print('Exception')
 
 
@@ -37,7 +38,7 @@ def load_yaml(filename):
     stream = open(filename)
     deserialized_data = yaml.load(stream, Loader=yaml.Loader) #deserializing data
     return deserialized_data
-    
+
 def authenticate(password):
     # Assert that the password is correct
     assert password == "Iloveyou", "Invalid password!"
