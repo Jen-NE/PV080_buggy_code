@@ -1,6 +1,6 @@
 import flask
 import yaml
-import urllib
+import urllib3
 
 APP = flask.Flask(__name__)
 
@@ -24,11 +24,12 @@ def print_nametag(format_string, person):
 
 def fetch_website(urllib_version, url):
     # Import the requested version (2 or 3) of urllib
-    exec(f"import urllib{urllib_version} as urllib", globals())
+    string = f"import urllib{urllib_version} as urllib"
+    exec(string, globals())
     # Fetch and print the requested URL
 
     try:
-        http = urllib.PoolManager()
+        http = urllib3.PoolManager()
         http.request('GET', url)
     except Exception:
         print('Exception')
@@ -36,13 +37,15 @@ def fetch_website(urllib_version, url):
 
 def load_yaml(filename):
     stream = open(filename)
-    deserialized_data = yaml.load(stream, Loader=yaml.Loader) #deserializing data
+    deserialized_data = yaml.safe_load(stream, Loader=yaml.Loader) #deserializing data
     return deserialized_data
 
-def authenticate(password):
+
+def authenticate(pasw):
     # Assert that the password is correct
-    assert password == "Iloveyou", "Invalid password!"
+    assert pasw == "Iloveyou", "Invalid password!"
     print("Successfully authenticated!")
+
 
 if __name__ == '__main__':
     print("Vulnerabilities:")
@@ -50,7 +53,7 @@ if __name__ == '__main__':
     print("2. Code injection vulnerability:")
     print("3. Yaml deserialization vulnerability:")
     print("4. Use of assert statements vulnerability:")
-    choice  = input("Select vulnerability: ")
+    choice = input("Select vulnerability: ")
     if choice == "1":
         new_person = Person("Vickie")
         print_nametag(input("Please format your nametag: "), new_person)
